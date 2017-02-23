@@ -31,8 +31,9 @@ app.listen(3000,function(){
 });
 
 
-var  foo = function() {
-    console.log('haha');
+var  foo = function(data) {
+    console.log(data.field1);
+    console.log(data.field2);
 }
 
 

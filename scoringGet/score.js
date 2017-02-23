@@ -1,31 +1,38 @@
-var languages = {};
-function Git() {
-    var self = this;
+var request = require("request");
     
-    var GitHubApi = require("github");
-    var auth = require("./creds.json");
+var GitHubApi = require("github");
+var auth = require("./creds.json"); 
 
-    var github = new GitHubApi({
-	headers: {
-	    "user-agent": 'github-lang-score'
-	},
-	debug: false
-    });
+var languages = [];
 
-    github.authenticate({
-	type:"basic",
-	username: auth['username'],
-	password: auth['password'],
-    });
+var github = new GitHubApi({
+    headers: {
+	"user-agent": 'github-lang-score'
+    },
+    debug: false
+});
 
-    github.repos.getAll({
-	username: "blankpanda"
-    }, function(err, res) {
-	var repos = res.data;
+github.authenticate({
+    type:"basic",
+    username: auth['username'],
+    password: auth['password'],
+});
 
-	for(var i = 0; i < repos.length; i++) {
-	    console.log(repos[i].languages_url);
-	}
-    });
-    
-}
+github.repos.getAll({
+    username: "blankpanda"
+}, function(err, res) {
+    var repos = res.data;
+    for(var i = 0; i < repos.length;i++) {
+	github.repos.getLanguages({
+	    owner: "blankpanda",
+	    repo: repos[i].name,
+	}, function (err, res) {
+	    if(res != undefined) {
+		console.log(res.data);
+	    }
+
+	});
+    }
+
+ });
+
