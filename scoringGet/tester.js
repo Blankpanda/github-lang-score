@@ -6,8 +6,8 @@ var f = {};
 get.getRepos(function(response){
 
     parseResponse(response);
-    setTimeout(printf,5000);
-    return;
+//    parseResponse(response);
+    // return;
 });
 
 
@@ -15,13 +15,19 @@ get.getRepos(function(response){
 function printf() {
     console.log(f);
 }
-function parseResponse(r) {
-    for(k in r) {
-	if(f[k] == r[k]) {
-	    f[k] += r[k];	    
-	} else {
-	    f[k] = r[k]
-	}
+function parseResponse(response) {
 
+    for(var i = 0; i < response.length; i++) {
+
+	for(responseKey in response[i]) {
+	    if(responseKey in f) {
+		f[responseKey] += response[i][responseKey];
+	    } else {
+		f[responseKey] = response[i][responseKey];
+	    }	    
+	}
     }
+
+    console.log(f);
 }
+

@@ -26,22 +26,26 @@ var GitHubGetter = function() {
 	}, function(err,res) {
 	    setTimeout(function() {
 		var repos = res.data;
-
+		var pendingOps = 0;
+		var accumData = [];
 		for(var i = 0; i < repos.length; i++){
+		    pendingOps++;
 		    self.github.repos.getLanguages({
 			owner: "blankpanda",
-			repo: repos[0].name
+			repo: repos[i].name
 		    }, function(err, lres) {
+			pendingOps--;
 			if(lres != undefined) {
-			    setTimeout(function() {
-				callback(lres.data);
-			    },5000);
-			
+			    accumData.push(lres.data);
+			}
+
+			if(pendingOps == 0) {
+			    return callback(accumData);
 			}
 		    });		    
 		}
 
-	    },5000);
+	    },1000);
 	});
     };
 }
